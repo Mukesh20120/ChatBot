@@ -16,9 +16,16 @@ function ChatBot() {
   };
 
   useEffect(() => {
+    const userId = localStorage.getItem('chatBotUserId');
     const newSocket = io("http://localhost:4000", {
-      withCredentials: true,
+      query: {
+        id: userId
+      }
     });
+    newSocket.on("Pre_Conversation",(allChat)=>{
+      console.log(allChat);
+      setChatData(allChat);
+    })
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
@@ -33,6 +40,9 @@ function ChatBot() {
     socket?.on("Greeting", (newMessage) => {
       setChatData((prev) => [...prev, newMessage]);
     });
+    socket?.on("Assign_Id",(userId)=>{
+      localStorage.setItem('chatBotUserId', userId);
+    })
     socket?.on("Read_Message",(data)=>{
       setIsRead(true);
     })

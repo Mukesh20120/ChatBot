@@ -15,7 +15,7 @@ function ChatModel({ chatData, handleAddInputData, isRead,userIsTyping }) {
         <div style={{ height: "100%",overflowX: 'scroll'}}>
           {chatData.map((data) => (
             <div
-             key={toString(Math.random)+data.message}
+             key={`${Math.random().toString(36).substring(2,9)}-${Date.now()}`}
               style={{
                 display: "flex",
                 justifyContent: data.user === "you" ? "flex-end" : "flex-start",
