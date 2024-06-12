@@ -1,0 +1,16 @@
+.chatCover {
+    position: fixed;
+    bottom: 12%;
+    right: 2%;
+    height: 70%;
+    width: 25%;
+    background-color: white;
+    z-index: 1;
+    border-radius: 5px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  
