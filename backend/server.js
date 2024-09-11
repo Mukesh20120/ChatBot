@@ -1,10 +1,12 @@
-import express from "express";
-import { createServer } from "http";
-import { Server } from "socket.io";
-import cors from "cors";
-import { v4 as uuid } from "uuid";
-import path from "path";
-import dotenv from "dotenv";
+const express = require("express");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors");
+const { v4: uuid } = require("uuid");
+const path = require("path");
+const dotenv = require("dotenv");
+
+// Load environment variables from .env file
 dotenv.config();
 
 const app = express();
