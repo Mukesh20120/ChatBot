@@ -2,30 +2,30 @@ import React, { useEffect, useMemo, useState } from "react";
 import FloatingIcon from "./Float Icon/FloatingIcon";
 import ChatModel from "./ChatModel/ChatModel";
 import { io } from "socket.io-client";
-
+import { BASE_URL } from "../../constant/constant";
 
 function ChatBot() {
   const [showChatModel, setShowChatModel] = useState(false);
   const [ChatData, setChatData] = useState([]);
   const [socket, setSocket] = useState(null);
-  const [isRead,setIsRead] = useState(false);
-  const [userIsTyping,setUserIsTyping] = useState(false);
+  const [isRead, setIsRead] = useState(false);
+  const [userIsTyping, setUserIsTyping] = useState(false);
 
   const showChatModelHandler = () => {
     setShowChatModel((prev) => !prev);
   };
 
   useEffect(() => {
-    const userId = localStorage.getItem('chatBotUserId');
-    const newSocket = io("http://localhost:4000", {
+    const userId = localStorage.getItem("chatBotUserId");
+    const newSocket = io(BASE_URL, {
       query: {
-        id: userId
-      }
+        id: userId,
+      },
     });
-    newSocket.on("Pre_Conversation",(allChat)=>{
+    newSocket.on("Pre_Conversation", (allChat) => {
       console.log(allChat);
       setChatData(allChat);
-    })
+    });
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
@@ -35,27 +35,26 @@ function ChatBot() {
       newSocket.disconnect();
     };
   }, []);
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     socket?.on("Greeting", (newMessage) => {
       setChatData((prev) => [...prev, newMessage]);
     });
-    socket?.on("Assign_Id",(userId)=>{
-      localStorage.setItem('chatBotUserId', userId);
-    })
-    socket?.on("Read_Message",(data)=>{
+    socket?.on("Assign_Id", (userId) => {
+      localStorage.setItem("chatBotUserId", userId);
+    });
+    socket?.on("Read_Message", (data) => {
       setIsRead(true);
-    })
-    socket?.on("Is_Typing",(data)=>{
+    });
+    socket?.on("Is_Typing", (data) => {
       setUserIsTyping(true);
-    })
-    socket?.on("Reply_Message",(newMessage)=>{
+    });
+    socket?.on("Reply_Message", (newMessage) => {
       setUserIsTyping(false);
       setIsRead(false);
       setChatData((prev) => [...prev, newMessage]);
-    })
-
-  },[socket])
+    });
+  }, [socket]);
 
   const countUnread = useMemo(() => {
     return ChatData.reduce((count, data) => count + (data.isUnread ? 1 : 0), 0);
@@ -67,9 +66,8 @@ function ChatBot() {
         prevData.map((data) => ({ ...data, isUnread: false }))
       );
     }
-    }, [showChatModel]);
+  }, [showChatModel]);
 
-     
   const handleInputMessage = (newMessage) => {
     socket?.emit("New_Message", newMessage);
     setChatData((prev) => [...prev, newMessage]);
